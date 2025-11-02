@@ -1,0 +1,27 @@
+directories:
+  output: release
+  buildResources: build
+appId: com.flowerinventory.desktop
+productName: Flower Inventory Management
+files:
+  - filter:
+      - dist/**/*
+      - electron/**/*
+      - server/**/*
+      - node_modules/**/*
+      - package.json
+mac:
+  category: public.app-category.business
+  target: dmg
+  icon: assets/icon.icns
+  identity: null
+win:
+  target: nsis
+  icon: assets/icon.ico
+linux:
+  target: AppImage
+  icon: assets/icon.png
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+electronVersion: 38.2.2

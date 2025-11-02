@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String   @id @default(cuid())
+  email      String   @unique
+  password   String
+  createdAt  DateTime @default(now())
+}
+
+model Supplier {
+  id          String   @id @default(cuid())
+  name        String
+  contact_person String?
+  email       String?
+  phone       String?
+  address     String?
+  notes       String?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  flowers     Flower[]
+}
+
+model Flower {
+  id            String   @id @default(cuid())
+  name          String
+  variety       String?
+  color         String?
+  supplier_id   String?  @db.VarChar(191)
+  current_stock Int
+  unit          String
+  cost_price    Float?
+  selling_price Float?
+  reorder_level Int
+  image_url     String?
+  notes         String?
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  supplier      Supplier? @relation(fields: [supplier_id], references: [id])
+  saleItems     SaleItem[]
+  StockMovement StockMovement[]
+}
+
+model Sale {
+  id           String   @id @default(cuid())
+  sale_date    DateTime @default(now())
+  total_amount Float
+  customer_name String?
+  customer_phone String?
+  payment_method String
+  notes        String?
+  created_at   DateTime @default(now())
+  items        SaleItem[]
+}
+
+model SaleItem {
+  id         String  @id @default(cuid())
+  sale_id    String  @db.VarChar(191)
+  flower_id  String  @db.VarChar(191)
+  quantity   Int
+  unit_price Float
+  subtotal   Float
+  created_at DateTime @default(now())
+
+  sale       Sale   @relation(fields: [sale_id], references: [id])
+  flower     Flower @relation(fields: [flower_id], references: [id])
+}
+
+model StockMovement {
+  id           String @id @default(cuid())
+  flower_id    String @db.VarChar(191)
+  movement_type String
+  quantity     Int
+  reference_id String?
+  notes        String?
+  created_at   DateTime @default(now())
+
+  flower       Flower @relation(fields: [flower_id], references: [id])
+}
